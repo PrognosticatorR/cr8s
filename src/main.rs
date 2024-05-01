@@ -1,6 +1,7 @@
 use rocket::routes;
 use routes::rustaceans::{
-    create_rustacean, delete_rustacean, get_rustaceans, update_rustacean, view_rustacean,
+    create_rustacean, delete_rustacean, get_rustaceans, hello_world, update_rustacean,
+    view_rustacean,
 };
 extern crate rocket;
 
@@ -21,7 +22,8 @@ async fn main() {
                 create_rustacean,
                 get_rustaceans,
                 view_rustacean,
-                delete_rustacean
+                delete_rustacean,
+                hello_world
             ],
         )
         .launch()

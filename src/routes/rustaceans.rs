@@ -19,3 +19,8 @@ pub fn delete_rustacean(id: i32) {}
 
 #[put("/rustaceans/<id>")]
 pub fn update_rustacean(id: i32) {}
+
+#[get("/")]
+pub fn hello_world() -> Value {
+    json!("Hell0, world!")
+}
