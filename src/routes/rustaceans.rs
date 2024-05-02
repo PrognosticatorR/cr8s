@@ -26,10 +26,10 @@ pub async fn get_rustaceans(db: DbConn) -> Result<Value, Custom<Value>> {
 pub async fn create_rustacean(
     db: DbConn,
     new_rustacean: Json<NewRustacean>,
-) -> Result<Value, Custom<Value>> {
+) -> Result<Custom<Value>, Custom<Value>> {
     db.run(|conn| {
         RustacenRepository::create(conn, new_rustacean.into_inner())
-            .map(|res| json!(res))
+            .map(|res| Custom(Status::Created, json!(res)))
             .map_err(|_| Custom(Status::InternalServerError, json!("something went wrong!")))
     })
     .await

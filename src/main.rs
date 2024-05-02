@@ -4,6 +4,7 @@ use routes::crates::{create_crate, delete_crate, get_crates, update_crate, view_
 use routes::rustaceans::{
     create_rustacean, delete_rustacean, get_rustaceans, update_rustacean, view_rustacean,
 };
+
 extern crate rocket;
 
 extern crate diesel;
@@ -12,6 +13,7 @@ mod models;
 mod repositories;
 mod routes;
 mod schema;
+mod tests;
 mod utils;
 
 #[rocket::main]
