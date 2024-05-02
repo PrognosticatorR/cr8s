@@ -1,8 +1,8 @@
 #[allow(dead_code)]
 use rocket::routes;
+use routes::crates::{create_crate, delete_crate, get_crates, update_crate, view_crate};
 use routes::rustaceans::{
-    create_rustacean, delete_rustacean, get_rustaceans, hello_world, update_rustacean,
-    view_rustacean,
+    create_rustacean, delete_rustacean, get_rustaceans, update_rustacean, view_rustacean,
 };
 extern crate rocket;
 
@@ -22,7 +22,15 @@ async fn main() {
         get_rustaceans,
         view_rustacean,
         delete_rustacean,
-        hello_world
+        update_crate,
+        create_crate,
+        get_crates,
+        view_crate,
+        delete_crate
     ];
-    let _ = rocket::build().mount("/", routes).launch().await;
+    let _ = rocket::build()
+        .mount("/", routes)
+        .attach(routes::DbConn::fairing())
+        .launch()
+        .await;
 }

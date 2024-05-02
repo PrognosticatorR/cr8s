@@ -1,9 +1,9 @@
 use crate::{
-    models::rustaceans::{FormRustacean, NewRustacean},
+    models::crates::{FormCrate, NewCrate},
     routes::DbConn,
 };
 
-use super::super::repositories::rustacean_repository::RustacenRepository;
+use super::super::repositories::crate_repository::CrateRepository;
 extern crate diesel;
 use rocket::{
     delete, get,
@@ -12,57 +12,55 @@ use rocket::{
     response::status::{Custom, NoContent},
     serde::json::{serde_json::json, Json, Value},
 };
-#[get("/rustaceans")]
-pub async fn get_rustaceans(db: DbConn) -> Result<Value, Custom<Value>> {
+
+#[get("/crates")]
+pub async fn get_crates(db: DbConn) -> Result<Value, Custom<Value>> {
     db.run(|conn| {
-        RustacenRepository::find(conn, 100)
+        CrateRepository::find(conn, 100)
             .map(|data| json!(data))
             .map_err(|_| Custom(Status::InternalServerError, json!("Something went wrong!")))
     })
     .await
 }
 
-#[post("/rustaceans", format = "json", data = "<new_rustacean>")]
-pub async fn create_rustacean(
-    db: DbConn,
-    new_rustacean: Json<NewRustacean>,
-) -> Result<Value, Custom<Value>> {
+#[post("/crates", format = "json", data = "<new_crate>")]
+pub async fn create_crate(db: DbConn, new_crate: Json<NewCrate>) -> Result<Value, Custom<Value>> {
     db.run(|conn| {
-        RustacenRepository::create(conn, new_rustacean.into_inner())
+        CrateRepository::create(conn, new_crate.into_inner())
             .map(|res| json!(res))
             .map_err(|_| Custom(Status::InternalServerError, json!("something went wrong!")))
     })
     .await
 }
 
-#[get("/rustaceans/<id>")]
-pub async fn view_rustacean(id: i32, db: DbConn) -> Result<Value, Custom<Value>> {
+#[get("/crates/<id>")]
+pub async fn view_crate(id: i32, db: DbConn) -> Result<Value, Custom<Value>> {
     db.run(move |conn| {
-        RustacenRepository::find_one(conn, id)
+        CrateRepository::find_one(conn, id)
             .map(|res| json!(res))
             .map_err(|_| Custom(Status::NotFound, json!("not found!")))
     })
     .await
 }
 
-#[delete("/rustaceans/<id>")]
-pub async fn delete_rustacean(id: i32, db: DbConn) -> Result<NoContent, Custom<Value>> {
+#[delete("/crates/<id>")]
+pub async fn delete_crate(id: i32, db: DbConn) -> Result<NoContent, Custom<Value>> {
     db.run(move |conn| {
-        RustacenRepository::delete(conn, id)
+        CrateRepository::delete(conn, id)
             .map(|_| NoContent)
             .map_err(|_| Custom(Status::InternalServerError, json!("Something went wrong")))
     })
     .await
 }
 
-#[put("/rustaceans/<id>", format = "json", data = "<update_rustacean>")]
-pub async fn update_rustacean(
+#[put("/crates/<id>", format = "json", data = "<update_crate>")]
+pub async fn update_crate(
     id: i32,
-    update_rustacean: Json<FormRustacean>,
+    update_crate: Json<FormCrate>,
     db: DbConn,
 ) -> Result<Value, Custom<Value>> {
     db.run(move |conn| {
-        RustacenRepository::update(conn, update_rustacean.into_inner(), id)
+        CrateRepository::update(conn, update_crate.into_inner(), id)
             .map(|res| json!(res))
             .map_err(|_| Custom(Status::InternalServerError, json!("something went wrong!")))
     })

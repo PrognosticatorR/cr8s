@@ -1,7 +1,7 @@
 use super::super::schema::*;
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Queryable, Serialize)]
 pub struct Rustacean {
@@ -11,14 +11,14 @@ pub struct Rustacean {
     pub created_at: NaiveDateTime,
 }
 
-#[derive(Insertable, Debug)]
+#[derive(Insertable, Debug, Deserialize)]
 #[diesel(table_name = rustaceans)]
 pub struct NewRustacean {
     pub name: String,
     pub email: String,
 }
 
-#[derive(Debug, AsChangeset)]
+#[derive(Debug, AsChangeset, Deserialize)]
 #[diesel(table_name = rustaceans)]
 pub struct FormRustacean {
     pub name: Option<String>,

@@ -2,8 +2,9 @@ use super::super::schema::*;
 use super::rustaceans::Rustacean;
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Queryable, Associations)]
+#[derive(Debug, Queryable, Associations, Serialize)]
 #[diesel(belongs_to(Rustacean))]
 pub struct Crate {
     pub id: i32,
@@ -15,7 +16,7 @@ pub struct Crate {
     pub created_at: NaiveDateTime,
 }
 
-#[derive(Debug, Insertable)]
+#[derive(Debug, Insertable, Deserialize)]
 #[diesel(table_name=crates)]
 
 pub struct NewCrate {
@@ -26,7 +27,7 @@ pub struct NewCrate {
     pub description: Option<String>,
 }
 
-#[derive(Debug, AsChangeset)]
+#[derive(Debug, AsChangeset, Deserialize)]
 #[diesel(table_name=crates)]
 pub struct FormCrate {
     pub rustacean_id: Option<i32>,
