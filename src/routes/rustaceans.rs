@@ -3,7 +3,7 @@ use crate::{
     routes::DbConn,
 };
 
-use super::super::repositories::rustacean_repository::RustacenRepository;
+use super::{super::repositories::rustacean_repository::RustacenRepository, serve_error};
 extern crate diesel;
 use rocket::{
     delete, get,
@@ -17,7 +17,7 @@ pub async fn get_rustaceans(db: DbConn) -> Result<Value, Custom<Value>> {
     db.run(|conn| {
         RustacenRepository::find(conn, 100)
             .map(|data| json!(data))
-            .map_err(|_| Custom(Status::InternalServerError, json!("Something went wrong!")))
+            .map_err(|err| serve_error(&err.into()))
     })
     .await
 }
@@ -30,7 +30,7 @@ pub async fn create_rustacean(
     db.run(|conn| {
         RustacenRepository::create(conn, new_rustacean.into_inner())
             .map(|res| Custom(Status::Created, json!(res)))
-            .map_err(|_| Custom(Status::InternalServerError, json!("something went wrong!")))
+            .map_err(|err| serve_error(&err.into()))
     })
     .await
 }
@@ -40,7 +40,7 @@ pub async fn view_rustacean(id: i32, db: DbConn) -> Result<Value, Custom<Value>>
     db.run(move |conn| {
         RustacenRepository::find_one(conn, id)
             .map(|res| json!(res))
-            .map_err(|_| Custom(Status::NotFound, json!("not found!")))
+            .map_err(|err| serve_error(&err.into()))
     })
     .await
 }
@@ -50,7 +50,7 @@ pub async fn delete_rustacean(id: i32, db: DbConn) -> Result<NoContent, Custom<V
     db.run(move |conn| {
         RustacenRepository::delete(conn, id)
             .map(|_| NoContent)
-            .map_err(|_| Custom(Status::InternalServerError, json!("Something went wrong")))
+            .map_err(|err| serve_error(&err.into()))
     })
     .await
 }
@@ -64,7 +64,7 @@ pub async fn update_rustacean(
     db.run(move |conn| {
         RustacenRepository::update(conn, update_rustacean.into_inner(), id)
             .map(|res| json!(res))
-            .map_err(|_| Custom(Status::InternalServerError, json!("something went wrong!")))
+            .map_err(|err| serve_error(&err.into()))
     })
     .await
 }
