@@ -1,4 +1,4 @@
-#![allow(dead_code)]
+#!r[allow(dead_code)]
 use rocket::routes;
 use routes::crates::{create_crate, delete_crate, get_crates, update_crate, view_crate};
 use routes::rustaceans::{

@@ -1,7 +1,7 @@
 use reqwest::{blocking::Client, StatusCode};
 use serde_json::*;
 
-use crate::tests::common::{self, APP_HOST};
+use crate::tests::utility::{common, common::APP_HOST};
 
 fn create_crate(
     client: &Client,

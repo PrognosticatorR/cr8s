@@ -1,6 +1,7 @@
-use crate::tests::common;
 use reqwest::{blocking::Client, StatusCode};
 use serde_json::*;
+
+use super::utility::common;
 
 fn get_rustacean(client: &Client, id: u64) -> Value {
     let response = client

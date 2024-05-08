@@ -3,4 +3,4 @@ pub mod crates;
 #[allow(dead_code)]
 pub mod rustaceans;
 
-pub mod common;
+pub mod utility;
