@@ -1,11 +1,12 @@
 use diesel::associations::Associations;
+use diesel::deserialize::Queryable;
 use diesel::prelude::Insertable;
 
 use super::roles::Role;
 use super::users::User;
 use crate::schema::user_roles;
 
-#[derive(Associations)]
+#[derive(Associations, Queryable)]
 #[diesel(belongs_to(User))]
 #[diesel(belongs_to(Role))]
 #[diesel(table_name=user_roles)]

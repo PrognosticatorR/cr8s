@@ -1,20 +1,10 @@
-#!r[allow(dead_code)]
-use rocket::routes;
-use routes::crates::{create_crate, delete_crate, get_crates, update_crate, view_crate};
-use routes::rustaceans::{
+extern crate cr8s;
+use cr8s::routes;
+use cr8s::routes::crates::{create_crate, delete_crate, get_crates, update_crate, view_crate};
+use cr8s::routes::rustaceans::{
     create_rustacean, delete_rustacean, get_rustaceans, update_rustacean, view_rustacean,
 };
-
-extern crate rocket;
-
-extern crate diesel;
-
-mod models;
-mod repositories;
-mod routes;
-mod schema;
-mod tests;
-mod utils;
+use rocket::routes;
 
 #[rocket::main]
 async fn main() {

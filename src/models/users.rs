@@ -1,9 +1,17 @@
 use crate::schema::users;
 use chrono::NaiveDateTime;
-use diesel::{prelude::*, query_builder::AsChangeset};
-use serde::Deserialize;
+use diesel::prelude::*;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Insertable)]
+#[derive(Queryable, Debug)]
+pub struct User {
+    pub id: i32,
+    pub username: String,
+    pub password: String,
+    pub created_at: NaiveDateTime,
+}
+
+#[derive(Debug, Insertable, Serialize)]
 #[diesel(table_name = users)]
 pub struct NewUser {
     pub username: String,
@@ -15,13 +23,4 @@ pub struct NewUser {
 pub struct FormUser {
     pub username: Option<String>,
     pub password: Option<String>,
-}
-
-#[derive(Debug, Queryable)]
-#[diesel(table_name = users)]
-pub struct User {
-    pub username: String,
-    pub password: String,
-    pub created_at: NaiveDateTime,
-    pub id: i32,
 }
