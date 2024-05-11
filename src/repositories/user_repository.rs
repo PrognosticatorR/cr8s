@@ -1,8 +1,8 @@
 pub struct UserRepository;
 use crate::{
     models::{
-        roles::NewRole,
-        user_roles::NewUserRole,
+        roles::{NewRole, Role},
+        user_roles::{NewUserRole, UserRole},
         users::{NewUser, User},
     },
     schema::*,
@@ -44,7 +44,20 @@ impl UserRepository {
         }
         Ok(user)
     }
-    pub fn list(conn: &mut PgConnection) -> QueryResult<Vec<User>> {
-        users::table.limit(10).load(conn)
+
+    pub fn delete(conn: &mut PgConnection, id: i32) -> QueryResult<usize> {
+        diesel::delete(users::table.find(id)).execute(conn)?;
+        diesel::delete(user_roles::table.filter(user_roles::user_id.eq(id))).execute(conn)
+    }
+
+    pub fn find_with_roles(
+        conn: &mut PgConnection,
+    ) -> QueryResult<Vec<(User, Vec<(UserRole, Role)>)>> {
+        let users = users::table.load(conn)?;
+        let result = user_roles::table
+            .inner_join(roles::table)
+            .load::<(UserRole, Role)>(conn)?
+            .grouped_by(&users);
+        Ok(users.into_iter().zip(result).collect())
     }
 }
