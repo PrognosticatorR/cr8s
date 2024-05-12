@@ -1,4 +1,4 @@
-use clap::{Arg, Command};
+use clap::{value_parser, Arg, Command};
 
 extern crate cr8s;
 
@@ -26,9 +26,11 @@ fn main() {
                 )
                 .subcommand(Command::new("list").about("Listing Existing Users!"))
                 .subcommand(
-                    Command::new("delete")
-                        .about("Delete A User!")
-                        .arg(Arg::new("id").required(true)),
+                    Command::new("delete").about("Delete A User!").arg(
+                        Arg::new("id")
+                            .required(true)
+                            .value_parser(value_parser!(i32)),
+                    ),
                 ),
         )
         .get_matches();

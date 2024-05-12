@@ -1,5 +1,6 @@
 use crate::{
     models::rustaceans::{FormRustacean, NewRustacean},
+    models::users::User,
     routes::DbConn,
 };
 
@@ -13,7 +14,7 @@ use rocket::{
     serde::json::{serde_json::json, Json, Value},
 };
 #[get("/rustaceans")]
-pub async fn get_rustaceans(db: DbConn) -> Result<Value, Custom<Value>> {
+pub async fn get_rustaceans(db: DbConn, _user: User) -> Result<Value, Custom<Value>> {
     db.run(|conn| {
         RustacenRepository::find(conn, 100)
             .map(|data| json!(data))
@@ -26,6 +27,7 @@ pub async fn get_rustaceans(db: DbConn) -> Result<Value, Custom<Value>> {
 pub async fn create_rustacean(
     db: DbConn,
     new_rustacean: Json<NewRustacean>,
+    _user: User,
 ) -> Result<Custom<Value>, Custom<Value>> {
     db.run(|conn| {
         RustacenRepository::create(conn, new_rustacean.into_inner())
@@ -36,7 +38,7 @@ pub async fn create_rustacean(
 }
 
 #[get("/rustaceans/<id>")]
-pub async fn view_rustacean(id: i32, db: DbConn) -> Result<Value, Custom<Value>> {
+pub async fn view_rustacean(id: i32, db: DbConn, _user: User) -> Result<Value, Custom<Value>> {
     db.run(move |conn| {
         RustacenRepository::find_one(conn, id)
             .map(|res| json!(res))
@@ -46,7 +48,11 @@ pub async fn view_rustacean(id: i32, db: DbConn) -> Result<Value, Custom<Value>>
 }
 
 #[delete("/rustaceans/<id>")]
-pub async fn delete_rustacean(id: i32, db: DbConn) -> Result<NoContent, Custom<Value>> {
+pub async fn delete_rustacean(
+    id: i32,
+    db: DbConn,
+    _user: User,
+) -> Result<NoContent, Custom<Value>> {
     db.run(move |conn| {
         RustacenRepository::delete(conn, id)
             .map(|_| NoContent)
@@ -59,6 +65,7 @@ pub async fn delete_rustacean(id: i32, db: DbConn) -> Result<NoContent, Custom<V
 pub async fn update_rustacean(
     id: i32,
     update_rustacean: Json<FormRustacean>,
+    _user: User,
     db: DbConn,
 ) -> Result<Value, Custom<Value>> {
     db.run(move |conn| {

@@ -1,7 +1,7 @@
 use reqwest::{blocking::Client, StatusCode};
 use serde_json::*;
 
-use super::utility::common;
+use crate::tests::utility::common;
 
 fn get_rustacean(client: &Client, id: u64) -> Value {
     let response = client
@@ -25,7 +25,7 @@ fn update_rustacean(client: &Client, id: u64, email: &str, name: &str) -> Value 
 
 #[test]
 fn test_create_rustacean() {
-    let client = Client::new();
+    let client = common::get_client_with_logged_in_admin();
 
     // Create a rustacean
     let json = common::create_rustacean(&client, "dvsg@345", "dev");
@@ -37,7 +37,7 @@ fn test_create_rustacean() {
 
 #[test]
 fn test_update_rustacean() {
-    let client = Client::new();
+    let client = common::get_client_with_logged_in_admin();
     // Create a rustacean
     let json = common::create_rustacean(&client, "dvsg@345", "dev");
     // Test GET one rustacean
@@ -52,7 +52,7 @@ fn test_update_rustacean() {
 
 #[test]
 fn test_get_all_rustaceans() {
-    let client = Client::new();
+    let client = common::get_client_with_logged_in_admin();
 
     // Create a rustacean
     common::create_rustacean(&client, "dvsg@345", "dev");

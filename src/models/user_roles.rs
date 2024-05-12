@@ -12,13 +12,13 @@ use crate::schema::user_roles;
 #[diesel(table_name=user_roles)]
 pub struct UserRole {
     pub id: i32,
-    pub role_id: i32,
     pub user_id: i32,
+    pub role_id: i32,
 }
 
 #[derive(Insertable, Debug)]
 #[diesel(table_name=user_roles)]
 pub struct NewUserRole {
-    pub role_id: i32,
     pub user_id: i32,
+    pub role_id: i32,
 }

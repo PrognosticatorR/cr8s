@@ -1,5 +1,8 @@
 use crate::{
-    models::crates::{FormCrate, NewCrate},
+    models::{
+        crates::{FormCrate, NewCrate},
+        users::User,
+    },
     routes::DbConn,
 };
 
@@ -14,7 +17,7 @@ use rocket::{
 };
 
 #[get("/crates")]
-pub async fn get_crates(db: DbConn) -> Result<Value, Custom<Value>> {
+pub async fn get_crates(db: DbConn, _user: User) -> Result<Value, Custom<Value>> {
     db.run(|conn| {
         CrateRepository::find(conn, 100)
             .map(|data| json!(data))
@@ -27,6 +30,7 @@ pub async fn get_crates(db: DbConn) -> Result<Value, Custom<Value>> {
 pub async fn create_crate(
     db: DbConn,
     new_crate: Json<NewCrate>,
+    _user: User,
 ) -> Result<Custom<Value>, Custom<Value>> {
     db.run(|conn| {
         CrateRepository::create(conn, new_crate.into_inner())
@@ -37,7 +41,7 @@ pub async fn create_crate(
 }
 
 #[get("/crates/<id>")]
-pub async fn view_crate(id: i32, db: DbConn) -> Result<Value, Custom<Value>> {
+pub async fn view_crate(id: i32, db: DbConn, _user: User) -> Result<Value, Custom<Value>> {
     db.run(move |conn| {
         CrateRepository::find_one(conn, id)
             .map(|res| json!(res))
@@ -47,7 +51,7 @@ pub async fn view_crate(id: i32, db: DbConn) -> Result<Value, Custom<Value>> {
 }
 
 #[delete("/crates/<id>")]
-pub async fn delete_crate(id: i32, db: DbConn) -> Result<NoContent, Custom<Value>> {
+pub async fn delete_crate(id: i32, db: DbConn, _user: User) -> Result<NoContent, Custom<Value>> {
     db.run(move |conn| {
         CrateRepository::delete(conn, id)
             .map(|_| NoContent)
@@ -61,6 +65,7 @@ pub async fn update_crate(
     id: i32,
     update_crate: Json<FormCrate>,
     db: DbConn,
+    _user: User,
 ) -> Result<Value, Custom<Value>> {
     db.run(move |conn| {
         CrateRepository::update(conn, update_crate.into_inner(), id)

@@ -60,4 +60,14 @@ impl UserRepository {
             .grouped_by(&users);
         Ok(users.into_iter().zip(result).collect())
     }
+
+    pub fn find_by_username(conn: &mut PgConnection, username: &String) -> QueryResult<User> {
+        users::table
+            .filter(users::username.eq(username))
+            .get_result::<User>(conn)
+    }
+
+    pub fn find_one(conn: &mut PgConnection, id: i32) -> QueryResult<User> {
+        users::table.find(id).get_result(conn)
+    }
 }

@@ -22,8 +22,7 @@ impl RoleRepository {
     }
 
     pub fn find_role_by_user(conn: &mut PgConnection, user: &User) -> QueryResult<Vec<Role>> {
-        let user_roles = UserRole::belonging_to(user).get_results(conn)?;
-
+        let user_roles = UserRole::belonging_to(user).get_results::<UserRole>(conn)?;
         Self::find_role_by_ids(
             conn,
             user_roles

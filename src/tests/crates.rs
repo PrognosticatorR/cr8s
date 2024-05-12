@@ -1,7 +1,7 @@
 use reqwest::{blocking::Client, StatusCode};
 use serde_json::*;
 
-use crate::tests::utility::{common, common::APP_HOST};
+use crate::tests::utility::common::{self, APP_HOST};
 
 fn create_crate(
     client: &Client,
@@ -20,7 +20,7 @@ fn create_crate(
         "version":version
     });
     let response = client
-        .post(format!("{}/crates", APP_HOST))
+        .post(format!("{}/crates", common::APP_HOST))
         .json(json)
         .send()
         .expect("Failed to create crate");
@@ -30,7 +30,7 @@ fn create_crate(
 
 fn get_crate(client: &Client, id: u64) -> Value {
     let response = client
-        .get(format!("{}/crates/{}", APP_HOST, id))
+        .get(format!("{}/crates/{}", common::APP_HOST, id))
         .send()
         .expect("Failed to get crate");
     assert_eq!(response.status(), StatusCode::OK);
@@ -55,7 +55,7 @@ fn update_crate(
         "version":version
     });
     let response = client
-        .put(format!("{}/crates/{}", APP_HOST, id))
+        .put(format!("{}/crates/{}", common::APP_HOST, id))
         .json(&json)
         .send()
         .expect("Failed to update crate");
@@ -65,7 +65,7 @@ fn update_crate(
 
 fn delete_crate(client: &Client, id: u64) {
     let response = client
-        .delete(format!("{}/crates/{}", APP_HOST, id))
+        .delete(format!("{}/crates/{}", common::APP_HOST, id))
         .send()
         .expect("Failed to delete crate");
     assert_eq!(response.status(), StatusCode::NO_CONTENT);
@@ -73,7 +73,7 @@ fn delete_crate(client: &Client, id: u64) {
 
 #[test]
 fn test_create_crate() {
-    let client = Client::new();
+    let client = common::get_client_with_logged_in_admin();
     let rustacean = common::create_rustacean(&client, "abc@gmail.com", "ABC@D");
     // Create a crate
     let json = create_crate(&client, &rustacean, "dev", "foo Boo", "0.1.1", None);
@@ -89,7 +89,7 @@ fn test_create_crate() {
 
 #[test]
 fn test_update_crate() {
-    let client = Client::new();
+    let client = common::get_client_with_logged_in_admin();
     let rustacean = common::create_rustacean(&client, "dev@chin2", "devrawat");
     // Create a crate
     let json = create_crate(&client, &rustacean, "dev", "foo Boo", "0.1.1", None);
@@ -121,12 +121,12 @@ fn test_update_crate() {
 
 #[test]
 fn test_get_all_crates() {
-    let client = Client::new();
+    let client = common::get_client_with_logged_in_admin();
     let rustacean = common::create_rustacean(&client, "dev@chin2", "devrawat");
     // Create a crate
     create_crate(&client, &rustacean, "dev", "foo Boo", "0.1.1", None);
 
     // Test GET all crates
-    let response = client.get("http://127.0.0.1:8000/crates").send().unwrap();
+    let response = client.get(format!("{}/crates", APP_HOST)).send().unwrap();
     assert_eq!(response.status(), StatusCode::OK);
 }
